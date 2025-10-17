@@ -5,20 +5,22 @@
 
 <div class="col-lg-12 col-12 layout-spacing">
     <div class="statbox widget box box-shadow">
-        <form action="{{route('categories.store')}}" method="POST" enctype="multipart/form-data" id="createCategory-form">
+        <form action="{{route('categories.update',$category->id)}}" method="POST" enctype="multipart/form-data" id="editCategory-form">
             @csrf
+            @method('PUT')
             <div class="row mb-4">
                 <div class="col">
                     <label for="name_id" class="d-block">نام دسته بندی </label>
-                    <input name="name" id="name_id" type="text" class="form-control" placeholder="نام دسته بندی ">
+                    <input value="{{$category->name }}" name="name" id="name_id" type="text" class="form-control" placeholder="نام دسته بندی ">
                 </div>
                 <div class="col">
                     <label for="image_id" class="d-block">بارگذاری تصویر    </label>
 
-                    <input name="image" type="file" class="form-control" id="image_id" placeholder="">
+                    <input  name="image" type="file" class="form-control" id="image_id" placeholder="">
+                    <span><br><img src="{{asset('AdminAssets/Category-image/' .$category->image )}}" height="100px" width="100px" alt=""></span>
                 </div>
             </div>
-            <input type="submit" name="sub" class="btn btn-primary" value="ثبت دسته بندی">
+            <input type="submit" name="sub" class="btn btn-primary" value="ویرایش دسته بندی">
         </form>
     </div>
 </div>
@@ -31,6 +33,6 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
 <!-- Laravel Javascript Validation -->
 <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
-{!! JsValidator::formRequest('App\Http\Requests\Admin\CategoryRequest', '#createCategory-form'); !!}
+{!! JsValidator::formRequest('App\Http\Requests\Admin\CategoryRequest', '#editCategory-form'); !!}
 @endsection
 

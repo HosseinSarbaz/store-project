@@ -18,3 +18,4 @@
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
 
 
+    @yield('jsValidation')

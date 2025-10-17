@@ -13,13 +13,17 @@ class Product extends Model
     protected $fillable = [
         'name',
         'price',
+        'inventory',
         'category_id',
         'description',
-        'images'
+        'images',
+        'status'
+
     ];
 
-    protected $casts = [
-        'images' => 'array'
-    ];
+
+    public function category(){
+        return $this->belongsTo(Category::class);
+    }
 }
 

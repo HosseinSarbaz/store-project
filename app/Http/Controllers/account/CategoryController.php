@@ -1,0 +1,114 @@
+<?php
+
+namespace App\Http\Controllers\account;
+
+use RealRashid\SweetAlert\Facades\Alert;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CategoryRequest;
+use App\Models\Category;
+use App\Repositories\Eloquent\CategoryRepository;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+
+class CategoryController extends Controller
+{
+
+    protected $Category;
+    public function __construct(CategoryRepository $CategoryRepo)
+    {
+        $this->Category = $CategoryRepo;
+    }
+
+    public function create(){
+        return view("Admin.Category.createcategory");
+    }
+
+    public function store(CategoryRequest $request){
+
+        $dataform=$request->validated();
+
+        if($request->hasFile('image')){
+            $dataform['image'] = $this->uploadImage($request->file('image') ,'categories');
+        }
+        else{
+            $dataform['image'] = null;
+        }
+        $dataform['status'] = 0;
+
+        $this->Category->create($dataform);
+
+        Alert::success('موفقیت', 'دسته بندی با موفقیت اضافه شد');
+        return redirect()->route("categories.index");
+    }
+
+    public function index(){
+        $categories = $this->Category->getAllWithProductCount(2);
+        return view("Admin.Category.categories",compact("categories"));
+    }
+
+    public function edit($id) {
+        $category = $this->Category->find($id);
+        return view("Admin.Category.editcategory",compact("category"));
+    }
+
+    public function update(CategoryRequest $request,$id){
+        $category= $this->Category->find($id);
+
+        $dataform = $request->validated();
+
+        if($request->hasFile('image'))
+            {
+            $newName=$this->uploadImage($request->file('image'),'categories',$category->image);
+            $dataform['image'] = $newName;
+            }
+            else
+            {
+            $dataform['image']=$category->image;
+            }
+
+        $dataform['status'] = 0;
+
+        $category->update($dataform);
+
+
+        Alert::success("ویرایش موفق","دسته بندی با موفقیت ویرایش شد");
+
+        return redirect()->route("categories.index");
+
+
+    }
+
+    public function destroy($id){
+        $category= $this->Category->find($id);
+
+
+        $category->delete();
+
+        Alert::success(" حذف موفق","دسته بندی با موفقیت حذف شد");
+
+        return redirect()->route("categories.index");
+
+    }
+
+
+
+    public function uploadImage($file,$folder='categories',$existingFilename = null)
+    {
+        $filename = time(). '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+        Storage::disk('public')->putFileAs($folder, $file, $filename);
+
+        if($existingFilename && Storage::disk('public')->exists($folder . '/' . $existingFilename)){
+            Storage::disk('public')->delete($folder . '/' . $existingFilename);
+        }
+
+        return $filename;
+
+
+    }
+
+
+
+}

@@ -22,6 +22,27 @@ body {
   letter-spacing: 0.0312rem;
   font-family: 'Nunito', sans-serif; }
 
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page-item.active .page-link {
+    background-color: #3e4564;
+    border-color: #4361ee;
+}
+
+.page-link {
+    color: #fff;
+    background-color: #1b1c2e;
+    border: 1px solid #2c2c3c;
+}
+
+.page-link:hover {
+    background-color: #2f3b73;
+    border-color: #3b4a91;
+}
+
 h1, h2, h3, h4, h5, h6 {
   color: #ebedf2; }
 
@@ -191,7 +212,7 @@ code {
   max-width: 58.333333%;
   margin-right: 80px; }
 
-/* 
+/*
 =====================
     Navigation Bar
 =====================
@@ -552,7 +573,7 @@ code {
   color: #bfc9d4;
   fill: rgba(0, 23, 55, 0.08); }
 
-/* 
+/*
 ===============
     Sidebar
 ===============
@@ -678,7 +699,7 @@ code {
   .page-header {
     display: block; } }
 
-/* 
+/*
 ===============
     Sidebar
 ===============
@@ -958,7 +979,7 @@ code {
 #sidebar ul.menu-categories .ps__rail-y {
   left: -4px !important; }
 
-/*  
+/*
     ======================
         Footer-wrapper
     ======================
@@ -992,7 +1013,7 @@ code {
   height: 15px;
   vertical-align: text-top; }
 
-/*  
+/*
     ======================
         MEDIA QUERIES
     ======================
