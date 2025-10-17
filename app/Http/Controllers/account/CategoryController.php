@@ -6,17 +6,19 @@ use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Models\Category;
+use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\Eloquent\CategoryRepository;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
 
     protected $Category;
-    public function __construct(CategoryRepository $CategoryRepo)
+    public function __construct(CategoryRepositoryInterface $CategoryRepo)
     {
         $this->Category = $CategoryRepo;
     }
@@ -96,6 +98,8 @@ class CategoryController extends Controller
 
     public function uploadImage($file,$folder='categories',$existingFilename = null)
     {
+        try
+        {
         $filename = time(). '_' . uniqid() . '.' . $file->getClientOriginalExtension();
 
         Storage::disk('public')->putFileAs($folder, $file, $filename);
@@ -105,8 +109,13 @@ class CategoryController extends Controller
         }
 
         return $filename;
+        }
 
-
+        catch(\Throwable $e)
+        {
+            Log::error("Upload Image Failed".$e->getMessage());
+            return $existingFilename ?? null;
+        }
     }
 
 

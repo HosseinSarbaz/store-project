@@ -37,7 +37,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function create(array $dataform)
     {
-        $dataform['category_id'] = new \MongoDB\BSON\ObjectId($dataform['category_id']);
+        $dataform['category_id'] = new ObjectId($dataform['category_id']);
         return $this->model->create($dataform);
     }
 
