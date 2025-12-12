@@ -49,12 +49,7 @@
 
             </div>
 
-            <div class="form-row mb-4">
-                <label for="image_id" class="d-block">بارگذاری تصویر    </label>
-
-                <input name="images" name="image" type="file" class="form-control" id="image_id" placeholder="">
-                <span><br><img src="{{asset('AdminAssets/Product-image/'.$product->images )}}" width="100px" height="100px" alt=""></span>
-        </div>
+            
 
           <button type="submit" class="btn btn-primary mt-3">ویرایش محصول</button>
         </form>

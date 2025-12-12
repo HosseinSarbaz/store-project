@@ -13,9 +13,9 @@ class paginationHelper
 
         $page = request()->input('page',1);
 
-        $total= $items->count();
+        $total= $collection->count();
 
-        $result = $items->forPage($page,$perpage)->values();
+        $result = $collection->forPage($page,$perpage)->values();
 
         return new LengthAwarePaginator(
             $result,

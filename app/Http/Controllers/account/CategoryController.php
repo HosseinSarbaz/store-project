@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\account;
 
+use App\Helpers\uploadImageHelper;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryRequest;
@@ -31,8 +32,9 @@ class CategoryController extends Controller
 
         $dataform=$request->validated();
 
+        $dataform['productslug'] = str_replace(' ', '-', $request->name);
         if($request->hasFile('image')){
-            $dataform['image'] = $this->uploadImage($request->file('image') ,'categories');
+            $dataform['image'] = uploadImageHelper::uploadImage($request->file('image') ,'categories');
         }
         else{
             $dataform['image'] = null;
@@ -46,7 +48,7 @@ class CategoryController extends Controller
     }
 
     public function index(){
-        $categories = $this->Category->getAllWithProductCount(2);
+        $categories = $this->Category->getAllWithProductCount(6);
         return view("Admin.Category.categories",compact("categories"));
     }
 
@@ -62,8 +64,9 @@ class CategoryController extends Controller
 
         if($request->hasFile('image'))
             {
-            $newName=$this->uploadImage($request->file('image'),'categories',$category->image);
+            $newName=uploadImageHelper::uploadImage($request->file('image'),'categories',$category->image);
             $dataform['image'] = $newName;
+            Storage::disk('public')->delete('categories/' . $category->image );
             }
             else
             {
@@ -85,6 +88,7 @@ class CategoryController extends Controller
     public function destroy($id){
         $category= $this->Category->find($id);
 
+        Storage::disk('public')->delete('categories/' . $category->image );
 
         $category->delete();
 
@@ -96,27 +100,27 @@ class CategoryController extends Controller
 
 
 
-    public function uploadImage($file,$folder='categories',$existingFilename = null)
-    {
-        try
-        {
-        $filename = time(). '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+    // public function uploadImage($file,$folder='categories',$existingFilename = null)
+    // {
+    //     try
+    //     {
+    //     $filename = time(). '_' . uniqid() . '.' . $file->getClientOriginalExtension();
 
-        Storage::disk('public')->putFileAs($folder, $file, $filename);
+    //     Storage::disk('public')->putFileAs($folder, $file, $filename);
 
-        if($existingFilename && Storage::disk('public')->exists($folder . '/' . $existingFilename)){
-            Storage::disk('public')->delete($folder . '/' . $existingFilename);
-        }
+    //     if($existingFilename && Storage::disk('public')->exists($folder . '/' . $existingFilename)){
+    //         Storage::disk('public')->delete($folder . '/' . $existingFilename);
+    //     }
 
-        return $filename;
-        }
+    //     return $filename;
+    //     }
 
-        catch(\Throwable $e)
-        {
-            Log::error("Upload Image Failed".$e->getMessage());
-            return $existingFilename ?? null;
-        }
-    }
+    //     catch(\Throwable $e)
+    //     {
+    //         Log::error("Upload Image Failed".$e->getMessage());
+    //         return $existingFilename ?? null;
+    //     }
+    // }
 
 
 

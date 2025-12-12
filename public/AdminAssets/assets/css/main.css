@@ -1680,11 +1680,28 @@ input[disabled], select[disabled], textarea[disabled], input[readonly], select[r
   background-color: rgba(25, 30, 58, 0.631373); }
 
 .table-controls > li > a svg {
+  display:inline-block;
   color: #25d5e4; }
 
 .table tr td .custom-dropdown.t-custom-dropdown a.dropdown-toggle, .table tr td .custom-dropdown-icon.t-custom-dropdown a.dropdown-toggle {
   border-radius: 5px;
   border: 1px solid #d3d3d3; }
+
+.table-controls {
+    display: flex;
+    justify-content: center; /* وسط چین بین آیکون‌ها */
+    align-items: center;
+    gap: 8px; /* فاصله بین آیکون‌ها */
+    list-style: none; /* حذف نقطه‌ی li */
+    padding: 0;
+    margin: 0;
+}
+
+.table-controls li {
+    display: flex;
+    align-items: center;
+}
+
 
 .table-controls > li > a svg {
   color: #888ea8;

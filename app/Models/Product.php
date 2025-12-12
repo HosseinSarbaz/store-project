@@ -17,9 +17,21 @@ class Product extends Model
         'category_id',
         'description',
         'images',
+        'colors',
+        'attribiutes',
+        'productslug',
         'status'
 
     ];
+
+    protected $casts  = [
+         //'images' => 'array',
+        // 'colors' => 'object',
+        // 'category_id' => ObjectIdCast::class,
+
+    ];
+
+
 
 
     public function category(){

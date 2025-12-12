@@ -1,8 +1,6 @@
-@extends("Admin.layouts.master");
-
+@extends("Admin.layouts.master")
 
 @section("content")
-
 <div class="col-lg-12 col-12 layout-spacing">
     <div class="statbox widget box box-shadow">
         <div class="row layout-spacing">
@@ -11,93 +9,139 @@
                     <div class="widget-header">
                         <div class="row">
                             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4>سبک 3</h4>
+                                <h4>لیست محصولات</h4>
                             </div>
                         </div>
                     </div>
+
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive mb-4">
-
-                            <table id="style-3" class="table style-3  table-hover">
+                            <table id="style-3" class="table style-3 table-hover">
                                 <thead>
                                     <tr>
-
-                                        <th>نام </th>
-                                        <th> قیمت محصول </th>
-                                        <th>  موجودی </th>
-                                        <th class="text-center">دسته بندی محصول</th>
-                                        <th class="text-center"> توضیح </th>
+                                        <th>نام</th>
+                                        <th>قیمت</th>
+                                        <th>موجودی</th>
+                                        <th class="text-center">دسته بندی</th>
+                                        <th class="text-center">توضیح</th>
                                         <th class="text-center">عکس</th>
-                                        <th class="text-center">وضیعت</th>
-                                        <th class="text-center">عمل</th>
+                                        <th class="text-center">وضعیت</th>
+                                        <th class="text-center">عملیات</th>
                                     </tr>
                                 </thead>
 
-
-
                                 <tbody>
-                                         @foreach ($products as $product)
+                                    @foreach ($products as $product)
+                                        <tr>
+                                            <td>{{ Str::limit($product->name, 40, '...')  }}</td>
+                                            <td>{{ number_format($product->price) }} تومان</td>
+                                            <td>{{ $product->inventory }}</td>
+                                            <td>{{ $product->category->name ?? 'ندارد' }}</td>
+                                            <td>{{ Str::limit($product->description, 40) }}</td>
 
+                                            {{--  نمایش اولین عکس یا no-image --}}
+                                            @php
+                                                $firstImage = null;
+                                                if (is_array($product->images) && count($product->images) > 0) {
+                                                    $firstImage = is_array($product->images[0])
+                                                        ? $product->images[0][0] // اگر خودش آرایه بود
+                                                        : $product->images[0];
+                                                }
+                                            @endphp
 
-                                    <tr>
-                                        <td>{{$product->name  }}</td>
-                                        <td>{{$product->price }}</td>
-                                        <td>{{$product->inventory }}</td>
-                                        <td>{{$product->category->name ?? 'دسته بندی موجود نیست' }}</td>
-                                        <td>{{$product->description }}</td>
+                                            <td class="text-center">
+                                                <img src="{{ asset('storage/products/' . ($firstImage ?? 'no-image.png')) }}"
+                                                     width="80" height="80" class="profile-img" alt="product-image">
+                                            </td>
 
-                                        <td class="text-center">
-                                            <span><img src="{{asset('storage/products/'. $product->images ?? 'no-image.png' )}}" width="80px" height="80px"  class="profile-img" alt="avatar"></span>
-                                        </td>
-                                        <td class="text-center"><span class="shadow-none badge badge-primary">تایید شده</span></td>
-                                        <td class="text-center">
-                                            <ul class="table-controls">
-                                                <li><a href="{{route('products.edit', $product->id )}}" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="ویرایش"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 p-1 br-6 mb-1"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></a></li>
+                                            <td class="text-center">
+                                                @if ($product->status == 1)
+                                                    <span class="badge bg-success shadow-none">فعال</span>
+                                                @else
+                                                    <span class="badge bg-secondary shadow-none">غیرفعال</span>
+                                                @endif
+                                            </td>
+
+                                            <td class="text-center">
+                                                <ul class="table-controls d-flex justify-content-center" style="gap:8px;">
+
+                                                    {{-- دکمه ویرایش --}}
                                                     <li>
-                                                    <form action="{{route('products.destroy' , $product->id )}}" method="POST" style="display:inline;">
+                                                        <a href="{{ route('products.edit', $product->id) }}"
+                                                           class="bs-tooltip" title="ویرایش">
+                                                           ✏️
+                                                        </a>
+                                                    </li>
 
-                                                        @csrf
-                                                        @method('DELETE')
+                                                    {{-- دکمه حذف --}}
+                                                    <li>
+                                                        <form action="{{ route('products.destroy', $product->id) }}"
+                                                              method="POST" style="display:inline;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
 
-                                                        <button type="submit"
-                                                                onclick="return confirm('مطمئنی میخوای حذف کنی؟')"
-                                                                style="border:none; background:none; padding:0; margin:0;">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                                 viewBox="0 0 24 24" fill="none" stroke="#830100"
-                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                 class="feather feather-trash-2 p-1 br-6 mb-1">
-                                                                 <polyline points="3 6 5 6 21 6"></polyline>
-                                                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6
-                                                                          m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            </svg>
-                                                        </button>
+                                                                    onclick="return confirm('مطمئنی میخوای حذفش کنی؟')"
+                                                                    style="border:none; background:none; cursor:pointer;">
+                                                                🗑️
+                                                            </button>
+                                                        </form>
+                                                    </li>
 
-                                                    </form>
-                                                </li>
-                                            </ul>
+                                                    {{-- دکمه افزودن عکس --}}
+                                                    <li>
+                                                        <a href="{{ route('Admin.Products.AddImage', $product->id) }}"
+                                                           class="bs-tooltip" title="افزودن عکس">🖼️</a>
+                                                    </li>
 
-                                        </td>
-                                    </tr>
+                                                    {{-- دکمه مشاهده گالری --}}
+                                                    <li>
+                                                        <a href="{{ route('Admin.Products.ProductImages', $product->id) }}"
+                                                           class="bs-tooltip" title="مشاهده همه تصاویر">📸</a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="{{route('Admin.Products.AddColor',$product->id )}}"
+                                                           class="bs-tooltip" title=" افزودن رنگ برای محصول ">🩸</a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="{{route('Admin.Products.productColors',$product->id )}}"
+                                                           class="bs-tooltip" title="مشاهده همه رنگ ها">🎨</a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="{{route('Admin.Products.AddAttribiute', $product->id)}}"
+                                                           class="bs-tooltip" title=" اضافه کردن ویژگی">+</a>
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="{{route('Admin.Product.Attribiutes', $product->id)}}"
+                                                           class="bs-tooltip" title=" اضافه کردن ویژگی">=</a>
+                                                    </li>
 
 
+                                                    <li>
+                                                        <a href="{{route('Home.showProduct', ['productslug' => $product->productslug])}}"
+                                                           class="bs-tooltip" title="   ">0</a>
+                                                    </li>
 
-                                     @endforeach
 
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
 
-                            <div class="d-flex justify-content-center mt-4 mb-4 dark" >
-                                {{$products->links('pagination::bootstrap-5') }}
+                            <div class="d-flex justify-content-center mt-4 mb-4">
+                                {{ $products->links('pagination::bootstrap-5') }}
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
-
 @endsection
-

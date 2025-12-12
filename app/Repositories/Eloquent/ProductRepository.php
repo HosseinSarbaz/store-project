@@ -7,7 +7,7 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use MongoDB\BSON\ObjectId;
-
+use MongoDB\Laravel\Eloquent\Casts\ObjectId as CastsObjectId;
 
 class ProductRepository implements ProductRepositoryInterface
 {

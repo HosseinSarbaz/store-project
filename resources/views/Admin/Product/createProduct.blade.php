@@ -29,7 +29,7 @@
 
                     <select name="category_id" class="selectpicker form-control p-2" >
                          @foreach ($categories as $category )
-                        <option value="{{$category->id}}" >{{$category->name}}</option>
+                        <option value="{{$category->_id}}" >{{$category->name}}</option>
                          @endforeach
                     </select>
 
@@ -50,7 +50,7 @@
             <div class="form-row mb-4">
                 <label for="image_id" class="d-block">بارگذاری تصویر    </label>
 
-                <input name="images" name="image" type="file" class="form-control" id="image_id" placeholder="">
+                <input name="images[]" name="image" type="file" class="form-control" id="image_id" placeholder="" multiple>
 
         </div>
 
