@@ -68,7 +68,7 @@
 
 
                                 <!-- Item 1 -->
-                                @foreach ($cart as $key => $item)
+                                @foreach ($cart['items'] as $key => $item)
                                     <div class="p-6 flex flex-col sm:flex-row gap-4">
 
                                         <div class="sm:w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -148,7 +148,7 @@
                             <div class="space-y-4">
                                 <div class="flex justify-between">
                                     <span>مبلغ کل کالاها (3 عدد)</span>
-                                    <span>{{number_format($total) }} تومان </span>
+                                    <span>{{number_format($cart['total_price']) }} تومان </span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span>تخفیف کالاها</span>
@@ -160,7 +160,7 @@
                                 </div>
                                 <div class="border-t border-gray-200 pt-4 flex justify-between font-bold text-lg">
                                     <span>مبلغ قابل پرداخت</span>
-                                    <span class="text-blue-600">{{number_format($total) }} تومان  </span>
+                                    <span class="text-blue-600">{{number_format($cart['total_price']) }} تومان  </span>
                                 </div>
                             </div>
 

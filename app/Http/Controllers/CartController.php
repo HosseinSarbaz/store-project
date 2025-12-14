@@ -8,14 +8,36 @@ use Illuminate\Http\Request;
 class CartController extends Controller
 {
 
-    public function show(){
-        $cart = session()->get('cart',[]);
-        $total = 0;
-        foreach($cart as $item)
-        {
-            $total += ($item['price'] ?? 0) * ($item['quantity'] ?? 0);
+
+    private function getcart(){
+        return session()->get('cart',[
+            'items' => [],
+            'total_quantity' =>0,
+            'total_price' =>0
+        ]);
+    }
+
+    private function savecart($cart){
+        session()->put('cart',$cart);
+    }
+
+
+    private function calculateTotals(&$cart){
+        $cart['total_quantity'] = 0;
+        $cart['total_price'] = 0;
+
+        foreach($cart['items'] as $item){
+            $cart['total_quantity'] += $item['quantity'];
+            $cart['total_price'] += $item['quantity'] * $item['price'] ;
         }
-        return view('Home.cart',compact("cart","total"));
+    }
+
+
+    public function show(){
+        $cart = $this->getcart();
+        $this->calculateTotals($cart);
+
+        return view('Home.cart',compact("cart"));
     }
 
 
@@ -33,6 +55,8 @@ class CartController extends Controller
             return back()->with('Error','محصول یافت نشد');
         }
 
+        $cart = $this->getcart();
+
         $colorName = "نامشخص";
         if(!empty($product->colors)){
         $colorName = array_search($request->color,$product->colors) ?: "نامشخص";
@@ -41,11 +65,11 @@ class CartController extends Controller
         $colorkey = $request->color ?: null;
         $id = $product->getKey() . '-' . $colorName;
 
-       $cart = session()->get('cart',[]);
 
 
-        if(isset($cart[$id])){
-            $cart[$id]['quantity']++;
+
+        if(isset($cart['items'][$id])){
+            $cart['items'][$id]['quantity']++;
         }
         else{
 
@@ -55,24 +79,22 @@ class CartController extends Controller
                 : $product->images[0];
             }
 
-            $colorName = "نامشخص";
-            if(!empty($product->colors)){
-                $colorName = array_search($request->color,$product->colors) ?: "نامشخص";
-            }
 
-
-            $cart[$id] = [
+            $cart['items'][$id] = [
                 'id' => $id,
+                'product_id' => (string)$product->getkey(),
                 'name' => $product->name,
                 'price' => $product->price,
+                'total_price' => $product->price,
                 'image' => $image,
-                'color' => $request->color,
+                'color' => $colorkey,
                 'color_name' => $colorName,
                 'quantity' => 1 ];
         }
 
 
-        session()->put('cart',$cart);
+        $this->calculateTotals($cart);
+        $this->savecart($cart);
 
 
 
@@ -83,12 +105,14 @@ class CartController extends Controller
     }
 
     public function remove(Request $request){
-        $cart = session()->get('cart',[]);
+        $cart = $this->getcart();
 
-        if(isset($cart[$request->id])){
-            unset($cart[$request->id]);
+        if(isset($cart['items'][$request->id])){
+            unset($cart['items'][$request->id]);
         }
-        session()->put('cart',$cart);
+
+        $this->calculateTotals($cart);
+        $this->savecart($cart);
 
         return redirect()->route('cart.show')->with('Success','محصول از سبد خرید حذف شد');
     }
@@ -97,20 +121,24 @@ class CartController extends Controller
     public function update(Request $request,$id){
 
 
-        $cart = session()->get('cart',[]);
-        if(isset($cart[$id])){
+        $cart = $this->getcart();
+
+        if(isset($cart['items'][$id])){
             if($request->action === 'increase'){
-                $cart[$id]['quantity'] ++ ;
+                $cart['items'][$id]['quantity'] ++ ;
             }
             elseif($request->action === 'decrease'){
-                $cart[$id]['quantity'] -- ;
+                $cart['items'][$id]['quantity'] -- ;
             }
-            if($cart[$id]['quantity'] <= 0){
-                unset($cart[$id]);
+            if($cart['items'][$id]['quantity'] <= 0){
+                unset($cart['items'][$id]);
             }
         }
-        session()->put('cart',$cart);
-        // dd("ok");
+
+        $this->calculateTotals($cart);
+        $this->savecart($cart);
+
+
 
         return redirect()->route('cart.show');
     }
