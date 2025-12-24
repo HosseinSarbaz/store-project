@@ -11,6 +11,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "mongodb/laravel-mongodb": "^5.5",
+        "morilog/jalali": "^3.4",
         "proengsoft/laravel-jsvalidation": "^4.10",
         "realrashid/sweet-alert": "^7.3"
     },

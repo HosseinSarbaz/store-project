@@ -12,8 +12,27 @@
     {{-- <script src="https://unpkg.com/feather-icons"></script> --}}
     <link rel="stylesheet" href="{{asset('HomeAssets/indexstyle.css')}}">
     <!-- Persian Font -->
-        <script src="{{asset('HomeAssets/components/header.js')}}"></script>
+    <script>
+        window.AUTH = {
+            loggedIn: {{ auth()->check() ? 'true' : 'false' }}
+        };
+    </script>
 
+    @include('Home.header')
+
+    <main class="container mx-auto px-4 py-8">
+        @auth
+            <h1 class="text-3xl font-bold">   @php
+               echo(auth()->user()->name);
+            @endphp  عزیز به بازاربووم خوش آمدید! </h1>
+        @endauth
+
+        @guest
+            <h1 class="text-3xl font-bold">به بازاربووم خوش آمدید!  </h1>
+        @endguest
+
+        <!-- ... -->
+    </main>     
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts.css">
     <style>
@@ -23,8 +42,24 @@
     </style>
 </head>
 <body class="bg-gray-50">
+
+    <script>
+        window.AUTH = {
+            loggedIn: {{ auth()->check() ? 'true' : 'false' }},
+            userName: "{{ auth()->check() ? auth()->user()->username : '' }}"
+        };
+    </script>
+
+
     <!-- Header Component -->
-    <custom-header home-url="{{route('Home.index')}}", admin-url="{{route('Admin.index')}}" >
+    <custom-header
+     home-url="{{route('Home.index')}}",
+     admin-url="{{route('Admin.index')}}",
+     register-url="{{route('Auth.RegisterForm')}}" ,
+     logout-url="{{route('Auth.logout')}}"
+
+
+                                                >
 
     </custom-header>
 
@@ -129,7 +164,7 @@
                             <i data-feather="shopping-cart" class="w-4 h-4 ml-1"></i>
                             افزودن به سبد خرید
                         </button>
-                        
+
                     </div>
                 </div>
                 </a>
@@ -272,5 +307,8 @@
     <script src="{{asset('HomeAssets/indexscript.js')}}"></script>
     <script>feather.replace();</script>
 {{-- <script src="https://huggingface.co/deepsite/deepsite-badge.js"></script> --}}
+
+<script src="https://unpkg.com/feather-icons"></script>
+
 </body>
 </html>
