@@ -213,8 +213,12 @@
                 </div>
             </div>
 
+
             <!-- محتوای اصلی -->
             <div class="lg:col-span-3">
+            <form action="{{route('Home.Profile.Update')}}" method="POST">
+                @csrf
+                @method('PUT')
                 <!-- تب اطلاعات حساب (پیش‌فرض فعال) -->
                 <div id="profile" class="tab-content active">
                     <div class="bg-white rounded-xl shadow-lg p-6">
@@ -229,22 +233,18 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">نام کامل</label>
-                                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                                    <p class="text-gray-800"> {{auth()->user()->name }}</p>
-                                </div>
+                                    <input type="text" name="name" value="{{auth()->user()->name }}" id="" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 " >
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">ایمیل</label>
-                                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                                    <p class="text-gray-800">{{auth()->user()->email }}</p>
+
+                                    <input type="text" name="email" value="{{auth()->user()->email }}" id="" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 " >
                                     <span class="text-xs text-green-600 mt-1 block">✓ تأیید شده</span>
-                                </div>
+
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">شماره موبایل</label>
-                                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                                    <p class="text-gray-800">{{auth()->user()->phone ?: 'خالی' }}</p>
-                                </div>
+                                    <input type="text" name="phone" value="{{auth()->user()->phone ?: '' }}" id="" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 " >
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">تاریخ عضویت</label>
@@ -262,33 +262,36 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-2">جنسیت</label>
                                     <div class="flex space-x-4 space-x-reverse">
                                         <label class="inline-flex items-center">
-                                            <input type="radio" name="gender" class="text-blue-600" checked>
+                                            <input type="radio" name="gender" value="male"
+                                                {{ auth()->user()->gender == 'male' ? 'checked' : '' }}>
                                             <span class="mr-2">آقا</span>
                                         </label>
                                         <label class="inline-flex items-center">
-                                            <input type="radio" name="gender" class="text-blue-600">
+                                            <input type="radio" name="gender" value="female"
+                                                {{ auth()->user()->gender == 'female' ? 'checked' : '' }}>
                                             <span class="mr-2">خانم</span>
                                         </label>
                                     </div>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">تاریخ تولد</label>
-                                    <input type="text" class="w-full bg-gray-50 p-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                                           placeholder="۱۳۷۰/۰۱/۰۱">
+                                    <input type="text" name="birth_day" class="w-full bg-gray-50 p-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                           value="{{auth()->user()->birth_day ?: '' }}">
                                 </div>
                             </div>
                         </div>
 
                         <!-- دکمه ذخیره -->
                         <div class="mt-8 flex justify-end">
-                            <button class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center">
+                            <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center">
                                 <i data-feather="save" class="w-4 h-4 ml-2"></i>
                                 ذخیره تغییرات
                             </button>
                         </div>
                     </div>
                 </div>
-
+                </form>
+            {{-- ------------------------------------------------------------------------------}}
                 <!-- تب سفارشات -->
                 <div id="orders" class="tab-content">
                     <div class="bg-white rounded-xl shadow-lg p-6">
@@ -341,50 +344,53 @@
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold text-gray-800">آدرس‌های من</h2>
-                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center">
+                            <form action="{{route('Home.Profile.addAddressForm') }}" method="GET" >
+                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center">
                                 <i data-feather="plus" class="w-4 h-4 ml-1"></i>
                                 افزودن آدرس جدید
                             </button>
+                            </form>
                         </div>
+                        @if ( $addresses->count() === 0 )
+
+                        <p class="text-gray-500 text-center">
+                            هیچ آدرسی ثبت نکرده اید
+                        </p>
+
+                        @else
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- آدرس ۱ -->
-                            <div class="border border-gray-200 rounded-lg p-5 hover:border-blue-300 transition">
-                                <div class="flex justify-between items-start mb-3">
-                                    <h3 class="font-bold text-gray-800">آدرس منزل</h3>
-                                    <div class="flex space-x-2 space-x-reverse">
-                                        <button class="text-blue-600 hover:text-blue-800">
-                                            <i data-feather="edit-2" class="w-4 h-4"></i>
-                                        </button>
-                                        <button class="text-red-600 hover:text-red-800">
-                                            <i data-feather="trash-2" class="w-4 h-4"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <p class="text-gray-600 mb-2">تهران، منطقه ۵، خیابان آزادی، کوچه ۱۲، پلاک ۳۴</p>
-                                <p class="text-gray-600">کد پستی: ۱۲۳۴۵۶۷۸۹۰</p>
-                                <div class="mt-3">
-                                    <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">آدرس پیش‌فرض</span>
-                                </div>
-                            </div>
+                            @foreach ($addresses as $address )
+                                <div class="border border-gray-200 rounded-lg p-5 hover:border-blue-300 transition">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <h3 class="font-bold text-gray-800">{{$address->city }} </h3>
+                                        <div class="flex space-x-2 space-x-reverse">
+                                            <form action="{{route('Home.Profile.editAddressForm')}}" method="get">
+                                                <button class="text-blue-600 hover:text-blue-800">
+                                                    <i data-feather="edit-2" class="w-4 h-4"></i>
+                                                </button>
+                                            </form>
 
-                            <!-- آدرس ۲ -->
-                            <div class="border border-gray-200 rounded-lg p-5 hover:border-blue-300 transition">
-                                <div class="flex justify-between items-start mb-3">
-                                    <h3 class="font-bold text-gray-800">آدرس محل کار</h3>
-                                    <div class="flex space-x-2 space-x-reverse">
-                                        <button class="text-blue-600 hover:text-blue-800">
-                                            <i data-feather="edit-2" class="w-4 h-4"></i>
-                                        </button>
-                                        <button class="text-red-600 hover:text-red-800">
-                                            <i data-feather="trash-2" class="w-4 h-4"></i>
-                                        </button>
+                                            <form action="{{route('Home.Profile.deleteAddress',$address->_id )}}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="text-red-600 hover:text-red-800">
+                                                    <i data-feather="trash-2" class="w-4 h-4"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-600 mb-2">{{$address->address }}</p>
+                                    <p class="text-gray-600">کد پستی: {{$address->postal_code }}</p>
+                                    <div class="mt-3">
+                                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">آدرس پیش‌فرض</span>
                                     </div>
                                 </div>
-                                <p class="text-gray-600 mb-2">تهران، خیابان ولیعصر، پلاک ۱۲۳۴، طبقه ۵</p>
-                                <p class="text-gray-600">کد پستی: ۹۸۷۶۵۴۳۲۱</p>
-                            </div>
+                            @endforeach
+
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

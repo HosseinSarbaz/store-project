@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\account\CategoryController;
 use App\Http\Controllers\account\ProductController as ProductController;
+use App\Http\Controllers\addressController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
@@ -79,7 +80,17 @@ Route::middleware('admin')->group(function(){
         Route::patch('/cart/update/{id}',[CartController::class,"update"])->name('cart.update');
 
         // پروفایل کاربر
-        Route::get('/profile',[ProfileController::class,"index"])->middleware('auth')->name('Home.Profile');
+        Route::prefix('profile')->middleware('auth')->group(function(){
+            Route::get('/',[ProfileController::class,"index"])->name('Home.Profile');
+            Route::put('/update',[ProfileController::class,"update"])->name('Home.Profile.Update');
+            //  آدرس
+            Route::get('/addAddressForm',[addressController::class,"addAddressForm"])->name('Home.Profile.addAddressForm');
+            Route::post('/addAdress',[addressController::class,"addAddress"])->name('Home.Profile.addAdress');
+            Route::get('/editAddressForm',[addressController::class,"editAddressForm"])->name('Home.Profile.editAddressForm');
+            Route::put('/editAddress/{id}',[addressController::class,"editAddress"])->name('Home.Profile.editAddress');
+            Route::delete('/deleteAddress/{id}',[addressController::class,"deleteAddress"])->name('Home.Profile.deleteAddress');
+
+        });
 
 
     });
