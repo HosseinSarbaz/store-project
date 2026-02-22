@@ -29,9 +29,11 @@
                     <a href="{{route('Home.index')}}" class="hover:text-blue-200 transition">
                         <i data-feather="home"></i>
                     </a>
-                    <a href="#" class="hover:text-blue-200 transition">
+                    @guest
+                    <a href="{{route('Auth.RegisterForm')}}" class="hover:text-blue-200 transition">
                         <i data-feather="user"></i>
                     </a>
+                    @endguest
                     <div class="relative">
                         <a href="{{route('cart.show')}}" class="hover:text-blue-200 transition">
                             <i data-feather="shopping-cart"></i>
@@ -78,7 +80,7 @@
                                         <div class="flex-grow">
                                             <div class="flex justify-between">
                                                 <h3 class="font-bold text-lg">{{ Str::limit($item['name'],38,'...')  }} </h3>
-                                                <h3 class="font-bold text-lg">{{$key}} </h3>
+                                                {{-- <h3 class="font-bold text-lg">{{$key}} </h3> --}}
 
                                                 <form action="{{route('cart.remove')}}" method="POST">
                                                 @csrf

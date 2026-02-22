@@ -24,9 +24,17 @@ class User extends Authenticatable
         'phone',
         'gender',
         'birth_day',
-        'role'
+        'role',
+        'cart'
     ];
 
+    protected $attributes = [
+        'cart' => [
+            'items' => [],
+            'total_quantity' => 0,
+            'total_price' => 0
+            ]
+        ];
 
     protected $hidden = [
         'password',

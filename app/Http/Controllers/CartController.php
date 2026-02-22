@@ -10,15 +10,36 @@ class CartController extends Controller
 
 
     private function getcart(){
+
+        if(auth()->check()) {
+            return auth()->user()->cart ?? [
+                'items' => [],
+                'total_quantity' =>0,
+                'total_price' =>0
+            ];
+        }
+
+        else{
         return session()->get('cart',[
             'items' => [],
             'total_quantity' =>0,
             'total_price' =>0
         ]);
+        }
     }
 
     private function savecart($cart){
-        session()->put('cart',$cart);
+
+        if(auth()->check()){
+            $user = auth()->user();
+            $user->cart = $cart;
+            $user->save();
+        }
+
+        else{
+            session()->put('cart',$cart);
+        }
+
     }
 
 
@@ -49,6 +70,48 @@ class CartController extends Controller
             'product_id' => 'required|string|exists:products,_id',
 
         ]);
+
+        // if(auth()->check()){
+        //     $user = auth()->user();
+        //     $product = Product::find($request->product_id);
+        //     if(! $product){
+        //         return back()->with("Error","محصول یافت نشد");
+        //     }
+
+        //     $cart = $this->getcart();
+
+        //     $colorName = "نامشخص";
+        //     if(!empty($product->colors) ){
+        //         $colorName = array_search($request->color,$product->colors) ?: "نامشخص";
+        //     }
+
+        //     $colorkey = $request->color ?: null;
+        //     $id = $product->getkey() . '-' . $colorName;
+
+        //     if(isset($cart['items'][$id])){
+        //         $cart['items'][$id]['quantity'] ++;
+        //     }
+
+
+        //    if(is_array($product->images) && count($product->images) > 0){
+        //         $image = is_array($product->images[0])
+        //         ? $product->images[0][0]
+        //         : $product->images[0];
+        //     }
+
+        //     else{
+        //         $cart['items'][$id] = [
+        //             'id' => $id,
+        //             'product_id' => (string)$product->getkey(),
+        //             'name' => $product->name,
+        //             'price' => $product->price,
+        //             'total_price' => $product->price,
+        //             'image' => $image,
+        //             'color' => $colorkey,
+        //             'color_name' => $colorName,
+        //             'quantity' => 1 ];
+        //     }
+        // }
 
         $product = Product::find($request->product_id);
         if(! $product){

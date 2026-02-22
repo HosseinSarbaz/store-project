@@ -50,7 +50,7 @@
                         <i data-feather="heart" class="w-5 h-5"></i>
                         <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
                     </a>
-                    <a href="#" class="text-gray-700 hover:text-blue-500 transition relative">
+                    <a href="{{route('cart.show')}}" class="text-gray-700 hover:text-blue-500 transition relative">
                         <i data-feather="shopping-cart" class="w-5 h-5"></i>
                         <span class="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
                     </a>
